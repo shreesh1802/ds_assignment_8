@@ -1,4 +1,5 @@
 #include <iostream>
+#include <algorithm>
 using namespace std;
 
 
@@ -197,6 +198,8 @@ int main() {
     Node* maxNode = findMax(root);
     cout << "\nMinimum value in BST: " << (minNode ? minNode->data : -1);
     cout << "\nMaximum value in BST: " << (maxNode ? maxNode->data : -1);
+    cout<<endl;
+    
 
     int val;
     cout<< "Enter value to delete: " << endl;
@@ -206,12 +209,10 @@ int main() {
     inorder(root);
     cout << endl;
 
-    cout <<"Maximum depth of tree: ";
-    maxDepth(root);
+    cout <<"Maximum depth of tree: "<<maxDepth(root);
     cout <<endl;
 
-    cout <<"Minimum depth of tree: ";
-    minDepth(root);
+    cout <<"Minimum depth of tree: "<< minDepth(root);
     cout<<endl;
 
     int key;
