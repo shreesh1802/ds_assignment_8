@@ -74,6 +74,34 @@ Node* findMax(Node* root) {
     return root;
 }
 
+Node* deleteNode(Node* root, int val) {
+    if (root == nullptr)
+        return root;
+
+    if (val < root->data)
+        root->left = deleteNode(root->left, val);
+    else if (val > root->data)
+        root->right = deleteNode(root->right, val);
+    else {
+       
+        if (root->left == nullptr) {
+            Node* temp = root->right;
+            delete root;
+            return temp;
+        } 
+        else if (root->right == nullptr) {
+            Node* temp = root->left;
+            delete root;
+            return temp;
+        }
+
+        Node* temp = findMin(root->right);
+        root->data = temp->data;
+        root->right = deleteNode(root->right, temp->data);
+    }
+    return root;
+}
+
 
 Node* inorderSuccessor(Node* root, Node* node) {
     if (node == nullptr)
@@ -120,6 +148,28 @@ Node* inorderPredecessor(Node* root, Node* node) {
     return predecessor;
 }
 
+int maxDepth(Node* root) {
+    if (root == nullptr)
+        return 0;
+    return 1 + max(maxDepth(root->left), maxDepth(root->right));
+}
+
+int minDepth(Node* root) {
+    if (root == nullptr)
+        return 0;
+
+    if (!root->left && !root->right)
+        return 1;
+    
+    if (!root->left)
+        return 1 + minDepth(root->right);
+    if (!root->right)
+        return 1 + minDepth(root->left);
+
+    return 1 + min(minDepth(root->left), minDepth(root->right));
+}
+
+
 
 int main() {
     Node* root = nullptr;
@@ -148,6 +198,25 @@ int main() {
     cout << "\nMinimum value in BST: " << (minNode ? minNode->data : -1);
     cout << "\nMaximum value in BST: " << (maxNode ? maxNode->data : -1);
 
+    int val;
+    cout<< "Enter value to delete: " << endl;
+    cin >> val;
+    deleteNode(root , val);
+    cout<<"Inorder Traversal: ";
+    inorder(root);
+    cout << endl;
+
+    cout <<"Maximum depth of tree: ";
+    maxDepth(root);
+
+    cout <<"Minimum depth of tree: ";
+    minDepth(root);
+
+    int key;
+    cout <<"Search for an element in tree: ";
+    cin >> key;
+    search(root,key);
+    
     
     cout << "\n\nEnter a value to find its inorder successor and predecessor: ";
     cin >> value;
