@@ -208,14 +208,17 @@ int main() {
 
     cout <<"Maximum depth of tree: ";
     maxDepth(root);
+    cout <<endl;
 
     cout <<"Minimum depth of tree: ";
     minDepth(root);
+    cout<<endl;
 
     int key;
     cout <<"Search for an element in tree: ";
     cin >> key;
     search(root,key);
+    cout<<endl;
     
     
     cout << "\n\nEnter a value to find its inorder successor and predecessor: ";
