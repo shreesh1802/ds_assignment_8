@@ -1,75 +1,68 @@
 #include <iostream>
-#include <vector>
 using namespace std;
 
 struct Node {
     int val;
-    Node* left;
-    Node* right;
-    
-    Node(int x) : val(x), left(nullptr), right(nullptr) {}
+    Node *left, *right;
+    Node(int v): val(v), left(0), right(0) {}
 };
 
-Node* clone(Node* root) {
-    if (!root) return nullptr;
-    Node* newNode = new Node(root->val);
-    newNode->left = clone(root->left);
-    newNode->right = clone(root->right);
-    return newNode;
-}
 
-
-vector<Node*> generateTrees(int start, int end) {
-    vector<Node*> result;
-
+const int MAX_TREES = 1000;
+Node** generateRange(int start, int end, int &count) {
     if (start > end) {
-        result.push_back(nullptr);
-        return result;
+        count = 1;
+        Node** arr = new Node*[1];
+        arr[0] = 0;          
+        return arr;
     }
 
+    Node** result = new Node*[MAX_TREES];
+    count = 0;
 
-    for (int i = start; i <= end; i++) {
-        vector<Node*> leftTrees = generateTrees(start, i - 1);
-        vector<Node*> rightTrees = generateTrees(i + 1, end);
+    for (int rootVal = start; rootVal <= end; ++rootVal) {
+        int leftCount = 0, rightCount = 0;
+        Node** leftTrees = generateRange(start, rootVal - 1, leftCount);
+        Node** rightTrees = generateRange(rootVal + 1, end, rightCount);
 
-  
-        for (auto left : leftTrees) {
-            for (auto right : rightTrees) {
-                Node* root = new Node(i);
-                root->left = clone(left);
-                root->right = clone(right);
-                result.push_back(root);
+        for (int i = 0; i < leftCount; ++i) {
+            for (int j = 0; j < rightCount; ++j) {
+                Node* root = new Node(rootVal);
+                root->left = leftTrees[i];
+                root->right = rightTrees[j];
+                result[count++] = root;
             }
         }
+        delete [] leftTrees;
+        delete [] rightTrees;
     }
-
     return result;
 }
 
-
-vector<Node*> generateTrees(int n) {
-    if (n == 0) return {};
-    return generateTrees(1, n);
+Node** generateTrees(int n, int &count) {
+    if (n == 0) { count = 0; return 0; }
+    return generateRange(1, n, count);
 }
 
 
-void inorder(Node* root) {
-    if (!root) return;
-    inorder(root->left);
-    cout << root->val << " ";
-    inorder(root->right);
+void printPre(Node* r) {
+    if (!r) { cout << "null "; return; }
+    cout << r->val << " ";
+    printPre(r->left);
+    printPre(r->right);
 }
 
 int main() {
     int n = 3;
-    vector<Node*> trees = generateTrees(n);
-    
-    cout << "Total unique BSTs for n = " << n << " are: " << trees.size() << endl;
-    for (int i = 0; i < trees.size(); i++) {
-        cout << "Tree " << i + 1 << ": ";
-        inorder(trees[i]);
-        cout << endl;
-    }
+    int total = 0;
+    Node** trees = generateTrees(n, total);
 
+    cout << "Total unique BSTs: " << total << "\n";
+    for (int i = 0; i < total; ++i) {
+        cout << "Tree " << i + 1 << ": ";
+        printPre(trees[i]);
+        cout << "\n";
+    }
+    delete [] trees;
     return 0;
 }
